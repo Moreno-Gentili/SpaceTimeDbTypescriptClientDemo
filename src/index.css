@@ -1,0 +1,190 @@
+:root {
+    --player-width: 11.8518vh;
+	--player-height: 14.07407vh;
+    --player-shadow-width: 11.8518vh;
+	--player-shadow-height: 5.9259vh;
+    --ball-size: 4.4444vh;
+    --ball-shadow-width: 4.4444vh;
+	--ball-shadow-height: 2.2222vh;
+    --field-offset: 5.185vh;
+    --scale-factor: 7.407407;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: darkslategray;
+    display: flex;
+    justify-content: center;
+}
+
+main {
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+
+    background-image: url('images/field.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#field {
+    width: 0;
+    height: 0;
+    position: relative;
+    margin-top: var(--field-offset);
+}
+
+.movable {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: calc(var(--scale-factor) * attr(data-x vh));
+    bottom: calc(var(--scale-factor) * attr(data-y vh));
+    z-index: calc(9999999 - (1000 * attr(data-y type(<number>))));
+}
+
+.ball::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: var(--ball-shadow-width);
+    height: var(--ball-shadow-height);
+    background-size: cover;
+    background-image: url('images/shadow.png');
+    background-repeat: no-repeat;
+    left: calc(var(--ball-shadow-width) * -0.5);
+    bottom: calc(var(--ball-shadow-height) * -0.3);
+    opacity: 0.5;
+}
+
+.ball::after {
+    position: absolute;
+    content: '';
+    transform-origin: center;
+    display: block;
+    width: var(--ball-size);
+    height: var(--ball-size);
+    background-size: cover;
+    background-image: url('images/ball.gif');
+    background-repeat: no-repeat;
+    left: calc(var(--ball-size) * -0.5);
+    bottom: calc(var(--scale-factor) * attr(data-z vh));
+}
+
+.player::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: var(--player-shadow-width);
+    height: var(--player-shadow-height);
+    background-size: cover;
+    background-image: url('images/shadow.png');
+    background-repeat: no-repeat;
+    left: calc(var(--player-shadow-width) * -0.5);
+    bottom: calc(var(--player-shadow-height) * -0.3);
+    opacity: 0.5;
+}
+
+.player::after {
+    position: absolute;
+    content: '';
+    transform-origin: center;
+    display: block;
+    width: var(--player-width);
+    height: var(--player-height);
+    background-repeat: no-repeat;
+    animation-duration: 0.4s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-timing-function: step-start;
+    transition: transform 0.2s;
+    background-size: calc(var(--player-width) * 4) calc(var(--player-height) * 6);
+    left: calc(var(--player-width) * -0.5);
+    bottom: calc(var(--scale-factor) * attr(data-z vh));
+}
+
+.player.time {
+    transform: scaleX(-1);
+}
+
+.player#Rio::after {
+    background-image: url('images/player-sprite-sheet.gif');
+}
+
+.player[data-state='idle']::after {
+    animation-name: idle;
+}
+
+.player[data-state='walking']::after {
+    animation-name: walking;
+}
+
+.player[data-state='throwing']::after {
+    animation-name: throwing;
+}
+
+.player[data-state='catching']::after {
+    animation-name: throwing; /* Reuse same animation as throwing */
+}
+
+.player[data-state='hit']::after {
+    animation-name: hit;
+}
+
+.player[data-state='won']::after {
+    animation-name: won;
+}
+
+.player[data-state='lost']::after {
+    animation-name: lost;
+}
+
+@keyframes idle {
+    25% { background-position: left 0 top 0; }
+    50% { background-position: left calc(var(--player-width) * -1) top 0; }
+    75% { background-position: left calc(var(--player-width) * -2) top 0; }
+   100% { background-position: left calc(var(--player-width) * -3) top 0; }
+}
+
+@keyframes walking {
+    25% { background-position: left 0 top calc(var(--player-height) * -1); }
+    50% { background-position: left calc(var(--player-width) * -1) top calc(var(--player-height) * -1); }
+    75% { background-position: left calc(var(--player-width) * -2) top calc(var(--player-height) * -1); }
+   100% { background-position: left calc(var(--player-width) * -3) top calc(var(--player-height) * -1); }
+}
+
+@keyframes throwing {
+    25% { background-position: left 0 top calc(var(--player-height) * -3); }
+    50% { background-position: left calc(var(--player-width) * -1) top calc(var(--player-height) * -3); }
+    75% { background-position: left calc(var(--player-width) * -2) top calc(var(--player-height) * -3); }
+   100% { background-position: left calc(var(--player-width) * -3) top calc(var(--player-height) * -3); }
+}
+
+@keyframes hit {
+    25% { background-position: left 0 top calc(var(--player-height) * -4); }
+    50% { background-position: left calc(var(--player-width) * -1) top calc(var(--player-height) * -4); }
+    75% { background-position: left calc(var(--player-width) * -2) top calc(var(--player-height) * -4); }
+   100% { background-position: left calc(var(--player-width) * -3) top calc(var(--player-height) * -4); }
+}
+
+@keyframes won {
+    25% { background-position: left 0 top calc(var(--player-height) * -2); }
+    50% { background-position: left calc(var(--player-width) * -1) top calc(var(--player-height) * -2); }
+    75% { background-position: left calc(var(--player-width) * -2) top calc(var(--player-height) * -2); }
+   100% { background-position: left calc(var(--player-width) * -3) top calc(var(--player-height) * -2); }
+}
+
+@keyframes lost {
+   100% { background-position: left 0 top calc(var(--player-height) * -5); }
+}
